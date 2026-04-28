@@ -1,0 +1,24 @@
+[client]
+# IMPÉRATIF : Si l'app plante, l'utilisateur voit juste "An error occurred" 
+# au lieu de voir votre code Python et vos chemins de fichiers.
+showErrorDetails = false 
+
+# Cache le menu "Hamburger" et les options de développement pour l'utilisateur
+toolbarMode = "viewer"
+
+[ui]
+# Cache la barre colorée en haut de l'écran pour un look plus "site web pro"
+hideTopBar = true
+
+[browser]
+# Désactive la télémétrie (Streamlit ne saura pas qui utilise votre app)
+gatherUsageStats = false
+serverAddress = "0.0.0.0"
+
+[theme]
+# J'ai repris les couleurs de votre app.py pour que le chargement soit joli
+base = "light"
+primaryColor = "#8C6F63"
+backgroundColor = "#FBF6EF"
+secondaryBackgroundColor = "#EDE7DE"
+textColor = "#372E2B"
