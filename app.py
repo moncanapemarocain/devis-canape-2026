@@ -166,7 +166,7 @@ from pdf_generator import generer_pdf_devis
 # Import des fonctions de génération de schémas
 from canapematplot import (
     render_LNF, render_LF_variant, render_U2f_variant,
-    render_U, render_U1F_v1, render_U1F_v2, render_U1F_v3, render_U1F_v4,
+    render_U, render_U1F, render_U1F_v1, render_U1F_v2, render_U1F_v3, render_U1F_v4,
     render_Simple1
 )
 
@@ -484,10 +484,12 @@ def generer_schema_canape(
                 meridienne_len=meridienne_len,
             )
         elif "U - 1 Angle" in type_canape:
-            render_U1F_v1(
+            # variant="auto" : explore v1/v2/v3/v4 et retient celle qui évite
+            # la scission ; à scissions égales, celle qui a le moins de pièces.
+            render_U1F(
                 tx=tx,
-                ty=ty,
-                tz=tz,
+                ty_left=ty,
+                tz_right=tz,
                 profondeur=profondeur,
                 dossier_left=dossier_left,
                 dossier_bas=dossier_bas,
@@ -497,6 +499,7 @@ def generer_schema_canape(
                 meridienne_side=meridienne_side,
                 meridienne_len=meridienne_len,
                 coussins=coussins,
+                variant="auto",
                 traversins=traversins_cfg,
                 couleurs=couleurs,
                 window_title="Canapé U - 1 Angle",

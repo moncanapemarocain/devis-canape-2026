@@ -6201,7 +6201,23 @@ def render_U1F(tx, ty_left, tz_right, profondeur=DEPTH_STD,
                window_title="U1F — auto"):
     """
     Rendu générique pour les U1F. Permet de forcer une variante (v1/v2/v3/v4)
-    ou de laisser le choix automatique (auto) entre les variantes les plus simples (v1 et v3).
+    ou de laisser le choix automatique (``auto``) parmi les 4 variantes.
+
+    En mode automatique, la variante retenue est celle qui minimise le coût
+    de fabrication, selon les priorités suivantes :
+
+      1. **Faisabilité** : aucune banquette ne doit dépasser 250 cm après
+         scission unique (garde-fou de sécurité).
+      2. **Minimiser les scissions** : une scission entraîne au minimum
+         une banquette/support supplémentaire et potentiellement un
+         dossier supplémentaire. On élimine donc d'office toute variante
+         qui scinde alors qu'une autre n'en a pas besoin.
+      3. **Minimiser le nombre total de pièces** (banquettes + dossiers
+         + accoudoirs + angle) parmi les variantes restantes.
+      4. **Départage déterministe** : ordre stable v1 → v2 → v3 → v4.
+
+    Cas dégradé : si toutes les variantes infaisables ou nécessitent une
+    scission, on retombe sur le meilleur compromis selon les critères 2-4.
     """
     v_norm = (variant or "auto").lower()
     # Forcer explicitement une variante
@@ -6242,15 +6258,12 @@ def render_U1F(tx, ty_left, tz_right, profondeur=DEPTH_STD,
                 coussins=coussins, traversins=traversins, couleurs=couleurs,
                 window_title=window_title,
             )
-    # Mode automatique: choisir la variante la plus simple entre v1 et v3
-    candidates = ("v1", "v3")
-    best_variant = None
-    best_nb_ban = float("inf")
-    best_scissions = float("inf")
-    def _count_scissions(polys):
-        base = 3
-        nb = len(polys.get("banquettes", []))
-        return max(0, nb - base)
+    # Mode automatique : explorer les 4 variantes et sélectionner la plus
+    # optimisée selon les critères du docstring.
+    candidates = ("v1", "v2", "v3", "v4")
+    order = {"v1": 0, "v2": 1, "v3": 2, "v4": 3}
+    feasible = []     # variantes sans dépassement résiduel > 250 cm
+    infeasible = []   # variantes incluses uniquement pour le repli dégradé
     for var in candidates:
         try:
             _pts, _polys = _dry_polys_for_U1F_variant(
@@ -6261,15 +6274,41 @@ def render_U1F(tx, ty_left, tz_right, profondeur=DEPTH_STD,
                 var,
             )
         except ValueError:
+            # Variante non applicable (ex. méridienne incompatible avec accoudoir)
             continue
         nb_ban = len(_polys.get("banquettes", []))
-        sci = _count_scissions(_polys)
-        if (nb_ban < best_nb_ban) or (nb_ban == best_nb_ban and sci < best_scissions):
-            best_variant = var
-            best_nb_ban = nb_ban
-            best_scissions = sci
-    if best_variant is None:
+        # base = 3 banquettes en U1F (gauche, bas, droite) → toute pièce
+        # supplémentaire est issue d'une scission.
+        scissions = max(0, nb_ban - 3)
+        total_pieces = (
+            nb_ban
+            + len(_polys.get("dossiers", []))
+            + len(_polys.get("accoudoirs", []))
+            + len(_polys.get("angle", []))
+        )
+        entry = (var, scissions, total_pieces)
+        try:
+            _assert_banquettes_max_250(_polys)
+            feasible.append(entry)
+        except ValueError:
+            infeasible.append(entry)
+
+    pool = feasible if feasible else infeasible
+    if pool:
+        # 1) Minimiser le nombre de scissions (priorité absolue)
+        min_scissions = min(e[1] for e in pool)
+        survivors = [e for e in pool if e[1] == min_scissions]
+        # 2) Parmi celles-là, minimiser le coût total (nombre de pièces)
+        min_pieces = min(e[2] for e in survivors)
+        survivors = [e for e in survivors if e[2] == min_pieces]
+        # 3) Départage déterministe : ordre stable v1 → v2 → v3 → v4
+        survivors.sort(key=lambda e: order[e[0]])
+        best_variant = survivors[0][0]
+    else:
+        # Aucune variante n'a pu être évaluée (toutes ont levé ValueError).
+        # Repli sur v1 pour conserver le comportement historique.
         best_variant = "v1"
+
     return _render_common_U1F(
         best_variant,
         tx, ty_left, tz_right, profondeur,
