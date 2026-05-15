@@ -186,11 +186,11 @@ def _call_render_function(mod: object, *, type_canape: str, tx: float | int | No
                 window_title="U"
             )
         elif 'u - 1 angle' in t:
-            render_func = getattr(mod, 'render_U1F_v1')
+            render_func = getattr(mod, 'render_U1F')
             kwargs = dict(
                 tx=tx,
-                ty=ty,
-                tz=tz,
+                ty_left=ty,
+                tz_right=tz,
                 profondeur=profondeur,
                 dossier_left=dossier_left,
                 dossier_bas=dossier_bas,
@@ -201,6 +201,7 @@ def _call_render_function(mod: object, *, type_canape: str, tx: float | int | No
                 meridienne_len=meridienne_len or 0,
                 coussins=coussins or 'auto',
                 traversins=traversins,
+                variant="auto",
                 window_title="U1F"
             )
         elif 'u - 2 angles' in t:
