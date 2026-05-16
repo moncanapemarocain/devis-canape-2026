@@ -789,7 +789,7 @@ with tab5:
     col1, col2 = st.columns(2)
     
     with col1:
-        type_mousse = st.selectbox("Type de mousse", ["D25", "D30", "HR35", "HR45"])
+        type_mousse = st.selectbox("Type de mousse", ["D32", "HR35", "HR45"])
         epaisseur = st.number_input("Épaisseur (cm)", min_value=15, max_value=35, value=25, step=5)
         # Ajout de l'option arrondis (par défaut cochée) permettant de majorer le prix de 20€ par banquette et par banquette d'angle
         arrondis = st.checkbox("Arrondis (bords arrondis)", value=True)
@@ -1347,7 +1347,7 @@ with tab6:
                             "meridienne_side": st.session_state.get('meridienne_side'),
                             "meridienne_len": st.session_state.get('meridienne_len', 0),
                             "type_coussins": st.session_state.get('type_coussins', 'auto'),
-                            "type_mousse": st.session_state.get('type_mousse', 'D25'),
+                            "type_mousse": st.session_state.get('type_mousse', 'D32'),
                             "epaisseur": st.session_state.get('epaisseur', 25),
                             "arrondis": st.session_state.get('arrondis', True),
                         },
@@ -1366,7 +1366,7 @@ with tab6:
                         tz=st.session_state.tz,
                         profondeur=st.session_state.profondeur,
                         type_coussins=st.session_state.get('type_coussins', 'auto'),
-                        type_mousse=st.session_state.get('type_mousse', 'D25'),
+                        type_mousse=st.session_state.get('type_mousse', 'D32'),
                         epaisseur=st.session_state.get('epaisseur', 25),
                         acc_left=st.session_state.get('acc_left', False),
                         acc_right=st.session_state.get('acc_right', False),
@@ -1480,7 +1480,7 @@ with tab6:
                         tx=st.session_state.tx, ty=st.session_state.ty, tz=st.session_state.tz,
                         profondeur=st.session_state.profondeur,
                         type_coussins=st.session_state.get('type_coussins', 'auto'),
-                        type_mousse=st.session_state.get('type_mousse', 'D25'),
+                        type_mousse=st.session_state.get('type_mousse', 'D32'),
                         epaisseur=st.session_state.get('epaisseur', 25),
                         acc_left=st.session_state.get('acc_left', False),
                         acc_right=st.session_state.get('acc_right', False),
@@ -1514,7 +1514,7 @@ with tab6:
                             "profondeur": st.session_state.profondeur,
                         },
                         "options": {
-                            "type_mousse": st.session_state.get('type_mousse', 'D25'),
+                            "type_mousse": st.session_state.get('type_mousse', 'D32'),
                             "epaisseur": st.session_state.get('epaisseur', 25),
                             "type_coussins": st.session_state.get('type_coussins', 'auto'),
                             "acc_left": st.session_state.get('acc_left'),

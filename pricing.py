@@ -19,7 +19,7 @@ Principales règles :
 
   où les dimensions proviennent du rapport console, l’épaisseur est
   saisie par l’utilisateur (cm) et la densité dépend du type de mousse
-  (D25 → 25, D30 → 30, HR35 → 35, HR45 → 45).
+  (D25 → 25, D32 → 32, HR35 → 35, HR45 → 45).
 
 * **Tissu** : pour chaque mousse, si ``largeur + (épaisseur * 2) > 140``
   alors le coût est ``(longueur/100) * 105``, sinon ``(longueur/100) * 74``.
@@ -873,7 +873,7 @@ def calculer_prix_total(
     # Coût de revient de la mousse selon la densité : coefficients spécifiques
     density_coeff_map = {
         'D25': 157.5,
-        'D30': 188.0,
+        'D32': 188.0,
         'HR35': 192.0,
         'HR45': 245.0,
     }
@@ -887,16 +887,16 @@ def calculer_prix_total(
         std_key = (int(round(length)), int(round(width)))
         # Détermination des prix standard pour les mousses de 25 cm ou 30 cm d'épaisseur
         std_prices_25 = {
-            (200, 70): {'D25': 42.55, 'D30': 51.0, 'HR35': 65.0, 'HR45': 84.0},
-            (200, 80): {'D25': 63.0, 'D30': 75.2, 'HR35': 76.2, 'HR45': 98.0},
-            (90, 90): {'D25': 31.9, 'D30': 38.1, 'HR35': 38.9, 'HR45': 49.6},
-            (100, 100): {'D25': 39.3, 'D30': 47.0, 'HR35': 48.0, 'HR45': 61.20}
+            (200, 70): {'D25': 42.55, 'D32': 51.0, 'HR35': 65.0, 'HR45': 84.0},
+            (200, 80): {'D25': 63.0, 'D32': 75.2, 'HR35': 76.2, 'HR45': 98.0},
+            (90, 90): {'D25': 31.9, 'D32': 38.1, 'HR35': 38.9, 'HR45': 49.6},
+            (100, 100): {'D25': 39.3, 'D32': 47.0, 'HR35': 48.0, 'HR45': 61.20}
         }
         std_prices_30 = {
-            (200, 70): {'D25': 51.30, 'D30': 61.30, 'HR35': 78.00, 'HR45': 100.80},
+            (200, 70): {'D25': 51.30, 'D32': 61.30, 'HR35': 78.00, 'HR45': 100.80},
             # Pas de tarif 30 cm fourni pour 200×80 : utiliser la formule générale.
-            (90, 90): {'D25': 38.30, 'D30': 45.70, 'HR35': 46.60, 'HR45': 59.50},
-            (100, 100): {'D25': 47.10, 'D30': 56.40, 'HR35': 57.60, 'HR45': 73.50}
+            (90, 90): {'D25': 38.30, 'D32': 45.70, 'HR35': 46.60, 'HR45': 59.50},
+            (100, 100): {'D25': 47.10, 'D32': 56.40, 'HR35': 57.60, 'HR45': 73.50}
         }
         std_fabric_prices = {
             (200, 70): 34.40, (200, 80): 34.40, (90, 90): 28.40, (100, 100): 28.40
@@ -960,10 +960,10 @@ def calculer_prix_total(
         }
         if is_std_size:
             std_foam_prices = {
-                (200, 70): {'D25': 42.55, 'D30': 51.0, 'HR35': 65.0, 'HR45': 84.0},
-                (200, 80): {'D25': 63.0, 'D30': 75.2, 'HR35': 76.2, 'HR45': 98.0},
-                (90, 90): {'D25': 31.9, 'D30': 38.1, 'HR35': 38.9, 'HR45': 49.6},
-                (100, 100): {'D25': 39.3, 'D30': 47.0, 'HR35': 48.0, 'HR45': 61.20}
+                (200, 70): {'D25': 42.55, 'D32': 51.0, 'HR35': 65.0, 'HR45': 84.0},
+                (200, 80): {'D25': 63.0, 'D32': 75.2, 'HR35': 76.2, 'HR45': 98.0},
+                (90, 90): {'D25': 31.9, 'D32': 38.1, 'HR35': 38.9, 'HR45': 49.6},
+                (100, 100): {'D25': 39.3, 'D32': 47.0, 'HR35': 48.0, 'HR45': 61.20}
             }
             std_fabric_prices = {
                 (200, 70): 34.40, (200, 80): 34.40, (90, 90): 28.40, (100, 100): 28.40
@@ -1263,23 +1263,23 @@ def calculer_prix_total(
     # Coefficients de densité pour le calcul des mousses usine (identiques au coût de revient)
     density_coeff_map_usine = {
         'D25': 157.5,
-        'D30': 188.0,
+        'D32': 188.0,
         'HR35': 192.0,
         'HR45': 245.0,
     }
     coeff_usine = density_coeff_map_usine.get(type_mousse or 'D25', density_coeff_map_usine['D25'])
     # Tarifs fixes pour les mousses de 25 cm d'épaisseur
     std_prices_usine_25 = {
-        (200, 70): {'D25': 42.55, 'D30': 51.0, 'HR35': 65.0, 'HR45': 84.0},
-        (200, 80): {'D25': 63.0, 'D30': 75.2, 'HR35': 76.2, 'HR45': 98.0},
-        (90, 90): {'D25': 31.9, 'D30': 38.1, 'HR35': 38.9, 'HR45': 49.6},
-        (100, 100): {'D25': 39.3, 'D30': 47.0, 'HR35': 48.0, 'HR45': 61.20}
+        (200, 70): {'D25': 42.55, 'D32': 51.0, 'HR35': 65.0, 'HR45': 84.0},
+        (200, 80): {'D25': 63.0, 'D32': 75.2, 'HR35': 76.2, 'HR45': 98.0},
+        (90, 90): {'D25': 31.9, 'D32': 38.1, 'HR35': 38.9, 'HR45': 49.6},
+        (100, 100): {'D25': 39.3, 'D32': 47.0, 'HR35': 48.0, 'HR45': 61.20}
     }
     # Tarifs fixes pour les mousses de 30 cm d'épaisseur
     std_prices_usine_30 = {
-        (200, 70): {'D25': 51.30, 'D30': 61.30, 'HR35': 78.00, 'HR45': 100.80},
-        (90, 90): {'D25': 38.30, 'D30': 45.70, 'HR35': 46.60, 'HR45': 59.50},
-        (100, 100): {'D25': 47.10, 'D30': 56.40, 'HR35': 57.60, 'HR45': 73.50}
+        (200, 70): {'D25': 51.30, 'D32': 61.30, 'HR35': 78.00, 'HR45': 100.80},
+        (90, 90): {'D25': 38.30, 'D32': 45.70, 'HR35': 46.60, 'HR45': 59.50},
+        (100, 100): {'D25': 47.10, 'D32': 56.40, 'HR35': 57.60, 'HR45': 73.50}
     }
     # Parcours des mousses droites
     for idx, (length, width) in enumerate(dims, start=1):
