@@ -63,7 +63,7 @@ def generer_png_devis(config, prix_details, schema_image=None, breakdown_rows=No
     m_type = config.get('options', {}).get('type_mousse', 'HR35')
     desc_map = {
         'D25': "La mousse D25 (25kg/m3) est très ferme, style marocain classique.",
-        'D30': "La mousse D30 (30kg/m3) est ultra ferme.",
+        'D32': "La mousse D32 (32kg/m3) est ultra ferme.",
         'HR35': "La mousse HR35 (35kg/m3) est semi-ferme confortable.\nHaute résilience.",
         'HR45': "La mousse HR45 (45kg/m3) est ferme confortable.\nHaute résilience."
     }
